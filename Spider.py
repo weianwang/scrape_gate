@@ -45,8 +45,7 @@ with open('gate_articles.csv', 'wb') as csvfile:
                 for child in children:
                     new_title = (child['title'].replace("Permalink to ", "")).encode('ascii', 'ignore')
                     new_link = child['href'].replace("http://uchicagogate.com", "")
-                    cat = topic
-                    weianwrite.writerow([new_title, new_link, cat, page])
+                    weianwrite.writerow([new_title, new_link, topic, page])
             
         
 
