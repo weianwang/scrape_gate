@@ -18,7 +18,7 @@ def print_default(gate_art, writer):
                     str(0), str(0), str(0)])
     return
 
-with open('data/[collated]google_pagedata + gate.csv', 'w') as f:
+with open('data/[collated]0201-0531-google_pagedata + gate.csv', 'w') as f:
     
     collate_writer = csv.writer(f)
     collate_writer.writerow(['Article Title', 'Category', 'Date', 'URL', 

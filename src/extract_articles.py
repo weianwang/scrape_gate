@@ -46,7 +46,7 @@ def make_new_element(url, date, pageviews, unique_pview, avgtime,
 
 google_articles = []
 #read elements into list of articles of object 
-with open('data/[original]google_pagedata_420-520.csv', 'r') as f:
+with open('data/[original]google_pagedata_0201-0531.csv', 'r') as f:
     google_read = csv.reader(f)
     #read file into google_articles list
     for row in google_read:
@@ -69,7 +69,7 @@ with open('data/[original]google_pagedata_420-520.csv', 'r') as f:
 
 google_articles = qsort(google_articles)
                   
-with open ('data/[filtered]google_pagedata_420-520.csv', 'w') as g:
+with open ('data/[filtered]google_pagedata_0201-0531.csv', 'w') as g:
     filter_write = csv.writer(g)
     #write the header
     filter_write.writerow(['Article URL', 'Date', 'Pageviews', 'Unique Pageviews',
