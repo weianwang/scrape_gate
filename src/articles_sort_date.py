@@ -44,15 +44,15 @@ f.close
 #will sort Article objects in articles_list by their date
 
 #qsort sorts a list of data objects that have the 'date' field
-def qsort(list):
-    if len(list) <= 1:
-        return list
+def qsort(lst):
+    if len(lst) <= 1:
+        return lst
     less = []
     equal = []
     greater = []
     
-    pivot = list[0]
-    for art in list:
+    pivot = lst[0]
+    for art in lst:
         if art.date < pivot.date:
             less.append(art)
         elif art.date == pivot.date:
