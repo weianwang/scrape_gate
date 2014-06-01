@@ -18,9 +18,9 @@ import csv
 import urllib2
 from bs4 import BeautifulSoup
 
-with open('gate_articles.csv', 'wb') as csvfile:
+with open('data/gate_articles.csv', 'wb') as csvfile:
     gatewrite = csv.writer(csvfile, dialect='excel')
-    gatewrite.writerow(["Article Title", "Article Link", "Category", "Page Number"])
+    gatewrite.writerow(["Article Title", "Article Link", "Date", "Category", "Page Number"])
     
     hashMaxPages = Definitions.makeHash()
     #for each element of the hash map
@@ -45,7 +45,8 @@ with open('gate_articles.csv', 'wb') as csvfile:
                 for child in children:
                     new_title = (child['title'].replace("Permalink to ", "")).encode('ascii', 'ignore')
                     new_link = child['href'].replace("http://uchicagogate.com", "")
-                    gatewrite.writerow([new_title, new_link, topic, page])
+                    date = Definitions.extract_date(new_link)
+                    gatewrite.writerow([new_title, new_link, date, topic, page])
             
-        
+
 

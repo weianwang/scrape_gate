@@ -47,3 +47,10 @@ def makeHash():
     hashTopics["Column: UCPU"] = make_new_topic(2, "columns/ucpu/")
     hashTopics["Column: Cartoons"] = make_new_topic(2, "columns/cartoons/")
     return hashTopics
+
+#Extract the article publication date from the URL in specific format
+#Store as number in form YYYYMMDD
+def extract_date(link):
+    date = link[1:5] + link[6:8] + link[9:11]
+    return int(date)
+    
