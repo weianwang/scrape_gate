@@ -10,7 +10,11 @@ Created on May 31, 2014
 #then sorts the articles by date
 import csv
 from articles_sort_date import qsort as qsort
-from Definitions import extract_date as extract_date
+from Definitions import getDate as getDate
+from Definitions import getAge as getAge
+from Definitions import INPUT_FILE_NAME
+from Definitions import OUTPUT_FILE_NAME
+import datetime
 
 #write string of '[number]%' as decimal
 
@@ -24,6 +28,7 @@ def extractSeconds(date):
 class AnalyticsElement:
     url= ''
     date = 0
+    age = 0
     pviews = 0
     unique_pview= 0
     avgtime = ''
@@ -36,6 +41,7 @@ def make_new_element(url, date, pageviews, unique_pview, avgtime,
     elem = AnalyticsElement()
     elem.url = url
     elem.date = date
+    elem.age = getAge(date)
     elem.pviews = pageviews
     elem.unique_pview = unique_pview
     elem.avgtime = avgtime
@@ -46,19 +52,21 @@ def make_new_element(url, date, pageviews, unique_pview, avgtime,
 
 google_articles = []
 #read elements into list of articles of object 
-with open('data/[original]google_pagedata_0201-0531.csv', 'r') as f:
+with open(INPUT_FILE_NAME, 'r') as f:
     google_read = csv.reader(f)
     #read file into google_articles list
     for row in google_read:
-        if not row or not(row[0].startswith('/20')):
+        if not row or not(row[0].startswith('/20')) or row[0].__len__() < 13 or '?' in row[0]: 
+            #<13 means not long enough to be article url
             continue
         else:
             url = row[0]
-            date = extract_date(url)
-            pviews = int(row[1])
-            unique_pview = int(row[2])
+            #date = extract_date(url)
+            date = getDate(url)
+            pviews = int(row[1].replace(',', ''))
+            unique_pview = int(row[2].replace(',', ''))
             avgtime = extractSeconds(row[3])
-            entrance = int(row[4])
+            entrance = int(row[4].replace(',', ''))
             bounce = stringPercentStrip(row[5])
             exit_rate = stringPercentStrip(row[6])
             elem = make_new_element(url, date, pviews, unique_pview, 
@@ -69,16 +77,17 @@ with open('data/[original]google_pagedata_0201-0531.csv', 'r') as f:
 
 google_articles = qsort(google_articles)
                   
-with open ('data/[filtered]google_pagedata_0201-0531.csv', 'w') as g:
+with open (OUTPUT_FILE_NAME, 'w') as g:
     filter_write = csv.writer(g)
     #write the header
-    filter_write.writerow(['Article URL', 'Date', 'Pageviews', 'Unique Pageviews',
+    filter_write.writerow(['Article URL', 'Date', 'Age (days)', 'Pageviews', 'Unique Pageviews',
                            'Average Time', 'Entrances', 'Bounce Rate', 'Exit Rate'])
     
     #write each element of sorted list of articles into filtered page data csv file
     for art in google_articles:
-        filter_write.writerow([art.url, art.date, art.pviews, art.unique_pview,
-                               art.avgtime, art.entrance, art.bounce, art.exit_rate])
+        filter_write.writerow([art.url, art.date.isoformat(), str(art.age), 
+                               art.pviews, art.unique_pview, art.avgtime, 
+                               art.entrance, art.bounce, art.exit_rate])
         
     g.close
     

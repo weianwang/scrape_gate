@@ -17,10 +17,12 @@ import Definitions
 import csv
 import urllib2
 from bs4 import BeautifulSoup
+from Definitions import getDate
+from Definitions import getAge
 
 with open('data/gate_articles.csv', 'wb') as csvfile:
     gatewrite = csv.writer(csvfile, dialect='excel')
-    gatewrite.writerow(["Article Title", "Article Link", "Date", "Category", "Page Number"])
+    gatewrite.writerow(["Article Title", "Article Link", "Date", "Age (days)", "Category", "Page Number"])
     
     hashMaxPages = Definitions.makeHash()
     #for each element of the hash map
@@ -45,8 +47,9 @@ with open('data/gate_articles.csv', 'wb') as csvfile:
                 for child in children:
                     new_title = (child['title'].replace("Permalink to ", "")).encode('ascii', 'ignore')
                     new_link = child['href'].replace("http://uchicagogate.com", "")
-                    date = Definitions.extract_date(new_link)
-                    gatewrite.writerow([new_title, new_link, date, topic, page])
+                    date = getDate(new_link)
+                    age = getAge(date)
+                    gatewrite.writerow([new_title, new_link, date.isoformat(), str(age), topic, page])
             
 
 

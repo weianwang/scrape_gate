@@ -12,11 +12,20 @@ for now, the maximum number of pages in each section is manually entered.
 will be updating with better method
 Relevant as of May 21, 2014
 '''
-    
+
+from datetime import date
+
+FIXED_END_DATE = date(2014, 06, 02)
+
+#defining strings for filenames
+INPUT_FILE_NAME = 'data/[original]google_pagedata_complete.csv'
+OUTPUT_FILE_NAME = 'data/[filtered]google_pagedata_complete.csv'
+COLLATED_FILE = 'data/[collated]gate + google_pagedata_complete.csv'
+
 '''
 Topic() is a data structure that contains the maximum number of pages per topic and the associated url extension
 ''' 
-    
+
 class Topic:
     max_pages = 0
     url = ""
@@ -48,9 +57,10 @@ def makeHash():
     hashTopics["Column: Cartoons"] = make_new_topic(2, "columns/cartoons/")
     return hashTopics
 
-#Extract the article publication date from the URL in specific format
-#Store as number in form YYYYMMDD
-def extract_date(link):
-    date = link[1:5] + link[6:8] + link[9:11]
-    return int(date)
-    
+
+def getDate(link):
+    newdate = date(int(link[1:5]), int(link[6:8]), int(link[9:11]))
+    return newdate
+
+def getAge(date1):
+    return (FIXED_END_DATE - date1).days

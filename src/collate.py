@@ -10,18 +10,20 @@ import csv
 
 from extract_articles import google_articles
 from articles_sort_date import articles_list as gate_articles
+from Definitions import COLLATED_FILE
+import datetime
 
 #default settings if article not found
 def print_default(gate_art, writer):
-    writer.writerow([art.title, art.category, art.date, art.url, 
+    writer.writerow([art.title, art.category, art.date.isoformat(), str(art.age), art.url, 
                     str(0), str(0), str(0),
                     str(0), str(0), str(0)])
     return
 
-with open('data/[collated]0201-0531-google_pagedata + gate.csv', 'w') as f:
+with open(COLLATED_FILE, 'w') as f:
     
     collate_writer = csv.writer(f)
-    collate_writer.writerow(['Article Title', 'Category', 'Date', 'URL', 
+    collate_writer.writerow(['Article Title', 'Category', 'Date', 'Age (days)', 'URL', 
                              'Pageviews', 'Unique Pageviews', 'Average Time (s)', 
                              'Entrances', 'Bounce Rate', 'Exit Rate'])
     #for art in gate_articles:   
@@ -30,24 +32,26 @@ with open('data/[collated]0201-0531-google_pagedata + gate.csv', 'w') as f:
     for art in gate_articles:
         for google_art in google_articles:
             default_bool = False
-            if google_art.date > art.date:
+            if google_art.age> art.age:
                 default_bool = True
                 break #leave the for loop because you have searched too far and the article does not exist
-            elif google_art.date < art.date:
+            elif google_art.age < art.age:
                 continue
             elif google_art.url == art.url:
                 #write the information to the collated file
                 title = art.title
                 category = art.category
-                date = art.date #maybe change to standardized format
+                date = art.date
                 url = art.url
+                age = str(art.age)
                 pviews = google_art.pviews
                 unique_pview = google_art.unique_pview
                 avgtime = google_art.avgtime
                 entrance = google_art.entrance
                 bounce = google_art.bounce
                 exit_rate = google_art.exit_rate
-                collate_writer.writerow([title, category, date, url, pviews, 
+                collate_writer.writerow([title, category, date.isoformat(), 
+                                         str(age), url, pviews, 
                                          unique_pview, avgtime, entrance,
                                          bounce, exit_rate])
                 break
