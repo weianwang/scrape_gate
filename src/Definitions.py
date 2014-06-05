@@ -15,13 +15,17 @@ Relevant as of May 21, 2014
 
 from datetime import date
 
-FIXED_END_DATE = date(2014, 06, 02)
+FIXED_END_DATE = date(2014, 06, 03)
 
 #defining strings for filenames
 INPUT_FILE_NAME = 'data/[original]google_pagedata_complete.csv'
 OUTPUT_FILE_NAME = 'data/[filtered]google_pagedata_complete.csv'
 COLLATED_FILE = 'data/[collated]gate + google_pagedata_complete.csv'
 
+EVENTS_INPUT_FILE = 'data/[original]google_eventpagesdata_complete.csv'
+EVENTS_ARTICLES = 'data/[filtered]google_eventpagesdata_complete.csv'
+EVENTS_OTHER = 'data/[other]google_eventpagesdata_complete.csv'
+EVENTS_COLLATED = 'data/[collated]google_eventpagesdata_complete.csv'
 '''
 Topic() is a data structure that contains the maximum number of pages per topic and the associated url extension
 ''' 

@@ -12,8 +12,7 @@ import csv
 from articles_sort_date import qsort as qsort
 from Definitions import getDate as getDate
 from Definitions import getAge as getAge
-from Definitions import INPUT_FILE_NAME
-from Definitions import OUTPUT_FILE_NAME
+from Definitions import INPUT_FILE_NAME, OUTPUT_FILE_NAME, EVENTS_INPUT_FILE, EVENTS_ARTICLES, EVENTS_OTHER
 import datetime
 
 #write string of '[number]%' as decimal
@@ -89,5 +88,67 @@ with open (OUTPUT_FILE_NAME, 'w') as g:
                                art.pviews, art.unique_pview, art.avgtime, 
                                art.entrance, art.bounce, art.exit_rate])
         
-    g.close
+g.close
     
+#extract articles for the event pages data 
+#literally the same script with some modifications
+
+def isArticle(url):
+    return (url.startswith('/20')) and url.__len__() > 12 and (not ('?' in url))
+
+#define lists for articles in events data and other pages in events data
+events_articles = []
+events_other = []
+
+#define new events_element object which represents one entry in the events page data
+
+class EventsElement:
+    url = ''
+    date = ''
+    age = 0
+    total_events = 0
+
+def make_new_event(url, total_events, date, age):
+    ev = EventsElement()
+    ev.url = url
+    ev.total_events = total_events
+    ev.date = date
+    ev.age = age
+    return ev
+
+with open(EVENTS_INPUT_FILE, 'r') as f: 
+    events_read = csv.reader(f)
+    for row in events_read:
+        if not row or not row[0].startswith('/'):
+            continue
+        else:
+            url = row[0]
+            total_events = int(row[1])
+            if not isArticle(row[0]):
+                date = 0
+                age = 0
+                ev = make_new_event(url, total_events, date, age)
+                events_other.append(ev)
+            else:
+                date = getDate(url)
+                age = getAge(date)
+                ev = make_new_event(url, total_events, date, age)
+                events_articles.append(ev)
+f.close
+        
+with open(EVENTS_OTHER, 'w') as g:
+    other_write = csv.writer(g)
+    other_write.writerow(['Page', 'Number of Events'])
+    for entry in events_other:
+        other_write.writerow([entry.url, str(entry.total_events)])
+g.close
+
+with open(EVENTS_ARTICLES, 'w') as a:
+    articles_write = csv.writer(a)
+    articles_write.writerow(['Article Page', 'Date of Publication', 'Number of Events'])
+    for entry in events_articles:
+        articles_write.writerow([entry.url, entry.date.isoformat(), str(entry.total_events)])
+a.close
+
+events_articles = qsort(events_articles)
+        

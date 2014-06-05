@@ -8,9 +8,10 @@ Created on May 31, 2014
  
 import csv
 
-from extract_articles import google_articles
+from extract_articles import google_articles, events_articles
 from articles_sort_date import articles_list as gate_articles
 from Definitions import COLLATED_FILE
+from Definitions import EVENTS_COLLATED
 import datetime
 
 #default settings if article not found
@@ -55,8 +56,27 @@ with open(COLLATED_FILE, 'w') as f:
                                          unique_pview, avgtime, entrance,
                                          bounce, exit_rate])
                 break
+            else:
+                break
         if (default_bool):
             print_default(art, collate_writer)
-    f.close
+f.close
         
-    
+# events data collating
+with open(EVENTS_COLLATED, 'w') as c:
+    events_writer = csv.writer(c)
+    events_writer.writerow(['Url', 'Age (days)', 
+                             'Total Events', 'Pageviews', 'Entrances'])
+    for art in google_articles:
+        for events_art in events_articles:
+            if events_art.age > art.age:
+                break
+            elif events_art.age < art.age:
+                continue
+            elif events_art.url == art.url:
+                events_writer.writerow([art.url, str(art.age), 
+                                        str(events_art.total_events), art.pviews, art.entrance])
+            else:
+                break
+
+c. close
